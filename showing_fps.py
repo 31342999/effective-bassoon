@@ -37,7 +37,6 @@ while True:
     cv2.putText(frame,mytext,(120,60),myfont,Font_Height,(255,0,0),Font_thick)
     cv2.imshow("My web CAM",frame)
     cv2.moveWindow('My web CAM',0,0)
-    time.sleep(0.1)
     if cv2.waitKey(1) == ord('q'):
         break
     counter = counter + 1
