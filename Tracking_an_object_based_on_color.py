@@ -32,18 +32,12 @@ print(cv2.__version__)
 width = 640
 height = 360
 
-LowHue1  = 10
-HighHue1 = 20
-LowSat1  = 10
-HighSat1 = 250
-LowVal1  = 10
-HighVal1 = 250
-LowHue2  = 10
-HighHue2 = 20
-LowSat2  = 10
-HighSat2 = 250
-LowVal2  = 10
-HighVal2 = 250
+LowHue  = 10
+HighHue = 20
+LowSat  = 10
+HighSat = 250
+LowVal  = 10
+HighVal = 250
 myCam = cv2.VideoCapture(0,cv2.CAP_DSHOW) 
 myCam.set(cv2.CAP_PROP_FRAME_WIDTH,width) 
 myCam.set(cv2.CAP_PROP_FRAME_HEIGHT,height) 
@@ -52,28 +46,19 @@ myCam.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc(*'MJPG'))
 cv2.namedWindow("myTrackbars")
 cv2.resizeWindow("myTrackbars",400,250)
 cv2.moveWindow("myTrackbars",width,0)
-cv2.createTrackbar("Low Hue", "myTrackbars",LowHue1,180,myCallBack1)
-cv2.createTrackbar("High Hue", "myTrackbars",HighHue1,180,myCallBack2)
-cv2.createTrackbar("Low Sat", "myTrackbars",LowSat1,255,myCallBack3)
-cv2.createTrackbar("High Sat", "myTrackbars",HighSat1,255,myCallBack4)
-cv2.createTrackbar("Low Val", "myTrackbars",LowVal1,255,myCallBack5)
-cv2.createTrackbar("High Val", "myTrackbars",HighVal1,255,myCallBack6)
-cv2.namedWindow("myTrackbars1")
-cv2.resizeWindow("myTrackbars1",400,250)
-cv2.moveWindow("myTrackbars1",width*2,0)
-cv2.createTrackbar("Low Hue", "myTrackbars1",LowHue2,180,myCallBack1)
-cv2.createTrackbar("High Hue", "myTrackbars1",HighHue2,180,myCallBack2)
-cv2.createTrackbar("Low Sat", "myTrackbars1",LowSat2,255,myCallBack3)
-cv2.createTrackbar("High Sat", "myTrackbars1",HighSat2,255,myCallBack4)
-cv2.createTrackbar("Low Val", "myTrackbars1",LowVal2,255,myCallBack5)
-cv2.createTrackbar("High Val", "myTrackbars1",HighVal2,255,myCallBack6)
+cv2.createTrackbar("Low Hue", "myTrackbars",LowHue,180,myCallBack1)
+cv2.createTrackbar("High Hue", "myTrackbars",HighHue,180,myCallBack2)
+cv2.createTrackbar("Low Sat", "myTrackbars",LowSat,255,myCallBack3)
+cv2.createTrackbar("High Sat", "myTrackbars",HighSat,255,myCallBack4)
+cv2.createTrackbar("Low Val", "myTrackbars",LowVal,255,myCallBack5)
+cv2.createTrackbar("High Val", "myTrackbars",HighVal,255,myCallBack6)
 print(myCam.get(cv2.CAP_PROP_FPS))
 while True:
     ignore, frame=myCam.read()
     frameHSV = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
-    lowerBound1 = np.array([LowHue,LowSat,LowVal])
-    upperBound1 = np.array([HighHue,HighSat,HighVal])
-    myMask = cv2.inRange(frameHSV,lowerBound1,upperBound1)
+    lowerBound = np.array([LowHue,LowSat,LowVal])
+    upperBound = np.array([HighHue,HighSat,HighVal])
+    myMask = cv2.inRange(frameHSV,lowerBound,upperBound)
     mysmallMask = cv2.resize(myMask,(int(width/2),int(height/2)))
     # myMask = cv2.bitwise_not(myMask)
     myObject = cv2.bitwise_and(frame,frame,mask=myMask)
