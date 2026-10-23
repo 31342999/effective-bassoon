@@ -4,16 +4,19 @@ import serial
 import time
 
 print(cv2.__version__)
-hueLow=90
-hueHigh=100
+hueLow=0
+hueHigh=28
+satLow=167
+satHigh=255
+valLow=135
+valHigh=255
 
-hueLow2=90
-hueHigh2=100
-
-satLow=20
-satHigh=200
-valLow=20
-valHigh=200
+hueLow2=103
+hueHigh2=115
+satLow2=119
+satHigh2=255
+valLow2=99
+valHigh2=255
 def onTrack1(val):
     global hueLow
     hueLow=val
@@ -66,19 +69,26 @@ def onTrack12(val):
     print('High Val2: ',val)
 
 def send_single_byte(value,xPos,yPos):
-    if value not in (0, 1):
-        print("Error: Only 0 or 1 allowed.")
-        return
-
     byte_to_send = bytes([value]) 
-    
+    trash123 = xPos
+    trash123 = yPos
     ser.write(byte_to_send)
     print(f"Sent raw byte: {value} ({byte_to_send})")
 
 width = 640
 height = 360
+trash123=0
+
+global y 
+global y1 
+global x 
+global x1 
+
 y = -1
 y1 = -1
+x = -1
+x1 = -1
+
 PORT_NAME = 'COM4'  
 BAUD_RATE = 115200
 cam = cv2.VideoCapture(1,cv2.CAP_DSHOW) 
@@ -162,16 +172,13 @@ while True:
             print("blue cord",x, y)
             print("red cord",x1,y1)
             send_single_byte(1,x,y)
-            y = -1
-            y1= -1
         if (y1<y):
             print("Blue is on top")
             print("blue cord",x, y)
             print("red cord",x1,y1)
             send_single_byte(0,x,y)     
-            y1 = -1
-            y = -1
-        
+        y1 = -1
+        y = -1
     if cv2.waitKey(1) & 0xff ==ord('q'):
         break
 cam.release()
