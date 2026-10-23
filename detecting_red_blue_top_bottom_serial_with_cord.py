@@ -81,7 +81,7 @@ y = -1
 y1 = -1
 PORT_NAME = 'COM4'  
 BAUD_RATE = 115200
-cam = cv2.VideoCapture(0,cv2.CAP_DSHOW) 
+cam = cv2.VideoCapture(1,cv2.CAP_DSHOW) 
 cam.set(cv2.CAP_PROP_FRAME_WIDTH,width) 
 cam.set(cv2.CAP_PROP_FRAME_HEIGHT,height) 
 cam.set(cv2.CAP_PROP_FPS,30) 
@@ -90,17 +90,17 @@ cv2.namedWindow('myTracker')
 cv2.moveWindow('myTracker',width,0)
 cv2.resizeWindow('myTracker',400,500)
 cv2.createTrackbar('Hue Low','myTracker',0,180,onTrack1)
-cv2.createTrackbar('Hue High','myTracker',27,180,onTrack2)
-cv2.createTrackbar('Sat Low','myTracker',94,255,onTrack3)
+cv2.createTrackbar('Hue High','myTracker',28,180,onTrack2)
+cv2.createTrackbar('Sat Low','myTracker',167,255,onTrack3)
 cv2.createTrackbar('Sat High','myTracker',255,255,onTrack4)
-cv2.createTrackbar('Val Low','myTracker',190,255,onTrack5)
+cv2.createTrackbar('Val Low','myTracker',135,255,onTrack5)
 cv2.createTrackbar('Val High','myTracker',255,255,onTrack6)
 
-cv2.createTrackbar('Hue Low2','myTracker',50,180,onTrack7)
-cv2.createTrackbar('Hue High2','myTracker',119,180,onTrack8)
-cv2.createTrackbar('Sat Low2','myTracker',94,255,onTrack9)
+cv2.createTrackbar('Hue Low2','myTracker',103,180,onTrack7)
+cv2.createTrackbar('Hue High2','myTracker',115,180,onTrack8)
+cv2.createTrackbar('Sat Low2','myTracker',119,255,onTrack9)
 cv2.createTrackbar('Sat High2','myTracker',255,255,onTrack10)
-cv2.createTrackbar('Val Low2','myTracker',190,255,onTrack11)
+cv2.createTrackbar('Val Low2','myTracker',99,255,onTrack11)
 cv2.createTrackbar('Val High2','myTracker',255,255,onTrack12)
 
 ser = serial.Serial(
@@ -147,6 +147,7 @@ while True:
 
     #myMask=cv2.bitwise_not(myMask)
     myMaskSmall=cv2.resize(myMask,(int(width/2),int(height/2)))
+    myMask = cv2.bitwise_or(myMask,myMask2)
     mySelection=cv2.bitwise_and(frame,frame, mask=myMask)
     mySelection=cv2.resize(mySelection,(int(width/2),int(height/2)))
     cv2.imshow('My Selection', mySelection)
@@ -158,16 +159,16 @@ while True:
     if(y>0 and y1>0):
         if (y<y1):
             print("red is on top")
-            print("blue cord", y)
-            print("red cord",y1)
-            send_single_byte(1)
+            print("blue cord",x, y)
+            print("red cord",x1,y1)
+            send_single_byte(1,x,y)
             y = -1
             y1= -1
         if (y1<y):
             print("Blue is on top")
-            print("blue cord", y)
-            print("red cord",y1)
-            send_single_byte(0)     
+            print("blue cord",x, y)
+            print("red cord",x1,y1)
+            send_single_byte(0,x,y)     
             y1 = -1
             y = -1
         
