@@ -68,7 +68,7 @@ def onTrack12(val):
     valHigh2=val
     print('High Val2: ',val)
 
-def send_single_byte(value,xPos,yPos):
+def send_byte(value,xPos,yPos):
     byte_to_send = bytes([value]) 
     trash123 = xPos
     trash123 = yPos
@@ -83,13 +83,17 @@ global y
 global y1 
 global x 
 global x1 
+global flag
+global i
 
 y = -1
 y1 = -1
 x = -1
 x1 = -1
+flag = 0
+i = -1
 
-PORT_NAME = 'COM4'  
+PORT_NAME = 'COM7'  
 BAUD_RATE = 115200
 cam = cv2.VideoCapture(1,cv2.CAP_DSHOW) 
 cam.set(cv2.CAP_PROP_FRAME_WIDTH,width) 
@@ -167,16 +171,28 @@ while True:
     cv2.imshow('my WEBcam',frame)
     cv2.moveWindow('my WEBcam',0,0)
     if(y>0 and y1>0):
-        if (y<y1):
-            print("red is on top")
-            print("blue cord",x, y)
-            print("red cord",x1,y1)
-            send_single_byte(1,x,y)
-        if (y1<y):
-            print("Blue is on top")
-            print("blue cord",x, y)
-            print("red cord",x1,y1)
-            send_single_byte(0,x,y)     
+        if(flag == 0):
+            if (y<y1):
+                print("red is on top")
+                print("blue cord",x, y)
+                print("red cord",x1,y1)
+                i = 1
+                flag == 1
+                send_byte(i,x,y)
+            if (y1<y):
+                print("Blue is on top")
+                print("blue cord",x, y)
+                print("red cord",x1,y1)
+                i = 0
+                flag == 1
+                send_byte(i,x,y)
+        if(flag == 1):
+            send_byte(i,x,y)
+            if(x == x1):
+                send_byte(2,x,y)
+                i = -1
+                flag = 0
+
         y1 = -1
         y = -1
     if cv2.waitKey(1) & 0xff ==ord('q'):
