@@ -1,16 +1,19 @@
 import numpy as np
 import cv2
 print(cv2.__version__)
-hueLow=90
-hueHigh=100
+hueLow=0
+hueHigh=28
+satLow=167
+satHigh=255
+valLow=135
+valHigh=255
 
-hueLow2=90
-hueHigh2=100
-
-satLow=20
-satHigh=200
-valLow=20
-valHigh=200
+hueLow2=103
+hueHigh2=115
+satLow2=119
+satHigh2=255
+valLow2=99
+valHigh2=255
 def onTrack1(val):
     global hueLow
     hueLow=val
@@ -45,28 +48,47 @@ def onTrack8(val):
     global hueHigh2
     hueHigh2=val
     print('High Hue2: ',val)
+def onTrack9(val):
+    global satLow2
+    satLow2=val
+    print('Low Sat2: ',val)
+def onTrack10(val):
+    global satHigh2
+    satHigh2=val
+    print('High sat2: ',val)
+def onTrack11(val):
+    global valLow2
+    valLow2=val
+    print('Low Val2: ',val)
+def onTrack12(val):
+    global valHigh2
+    valHigh2=val
+    print('High Val2: ',val)
 
 
 width = 640
 height = 360
-cam = cv2.VideoCapture(0,cv2.CAP_DSHOW) 
+cam = cv2.VideoCapture(1,cv2.CAP_DSHOW) 
 cam.set(cv2.CAP_PROP_FRAME_WIDTH,width) 
 cam.set(cv2.CAP_PROP_FRAME_HEIGHT,height) 
 cam.set(cv2.CAP_PROP_FPS,30) 
 cam.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc(*'MJPG')) 
 cv2.namedWindow('myTracker')
 cv2.moveWindow('myTracker',width,0)
-cv2.resizeWindow('myTracker',400,350)
-cv2.createTrackbar('Hue Low','myTracker',163,180,onTrack1)
-cv2.createTrackbar('Hue High','myTracker',180,180,onTrack2)
-
-cv2.createTrackbar('Hue Low2','myTracker',50,180,onTrack7)
-cv2.createTrackbar('Hue High2','myTracker',60,180,onTrack8)
-
-cv2.createTrackbar('Sat Low','myTracker',94,255,onTrack3)
+cv2.resizeWindow('myTracker',400,500)
+cv2.createTrackbar('Hue Low','myTracker',0,180,onTrack1)
+cv2.createTrackbar('Hue High','myTracker',28,180,onTrack2)
+cv2.createTrackbar('Sat Low','myTracker',167,255,onTrack3)
 cv2.createTrackbar('Sat High','myTracker',255,255,onTrack4)
-cv2.createTrackbar('Val Low','myTracker',190,255,onTrack5)
+cv2.createTrackbar('Val Low','myTracker',135,255,onTrack5)
 cv2.createTrackbar('Val High','myTracker',255,255,onTrack6)
+
+cv2.createTrackbar('Hue Low2','myTracker',103,180,onTrack7)
+cv2.createTrackbar('Hue High2','myTracker',115,180,onTrack8)
+cv2.createTrackbar('Sat Low2','myTracker',119,255,onTrack9)
+cv2.createTrackbar('Sat High2','myTracker',255,255,onTrack10)
+cv2.createTrackbar('Val Low2','myTracker',99,255,onTrack11)
+cv2.createTrackbar('Val High2','myTracker',255,255,onTrack12)
 
 
 while True:
@@ -76,25 +98,33 @@ while True:
     lowerBound=np.array([hueLow,satLow,valLow])
     upperBound=np.array([hueHigh,satHigh,valHigh])
 
-    lowerBound2=np.array([hueLow2,satLow,valLow])
-    upperBound2=np.array([hueHigh2,satHigh,valHigh])
+    lowerBound2=np.array([hueLow2,satLow2,valLow2])
+    upperBound2=np.array([hueHigh2,satHigh2,valHigh2])
 
     myMask=cv2.inRange(frameHSV,lowerBound,upperBound)
     myMask2=cv2.inRange(frameHSV,lowerBound2,upperBound2)
 
-    myMask=myMask | myMask2
+    # myMask=myMask | myMask2
     #myMask=cv2.add(myMask,myMask2)
     #myMask=np.logical_or(myMask,myMask2)
 
     contours,junk = cv2.findContours(myMask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    contours1,junk1 = cv2.findContours(myMask2,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     # cv2.drawContours(frame,contours,-1,(255,0,0),3)
-
+    
     for contour in contours:
         area = cv2.contourArea(contour)
         if area>=200:
             # cv2.drawContours(frame,[contour],0,(255,0,0),3)
             x,y,w,h=cv2.boundingRect(contour)
-            cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),3)
+            cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),3)
+    
+    for contour in contours1:
+            area = cv2.contourArea(contour)
+            if area>=200:
+                # cv2.drawContours(frame,[contour],0,(255,0,0),3)
+                x1,y1,w1,h1=cv2.boundingRect(contour)
+                cv2.rectangle(frame,(x1,y1),(x1+w1,y1+h1),(255,0,0),3)
 
     #myMask=cv2.bitwise_not(myMask)
     myMaskSmall=cv2.resize(myMask,(int(width/2),int(height/2)))

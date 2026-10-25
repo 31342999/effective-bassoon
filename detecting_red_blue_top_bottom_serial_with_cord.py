@@ -92,6 +92,7 @@ x = -1
 x1 = -1
 flag = 0
 i = -1
+buffer = 10
 
 PORT_NAME = 'COM7'  
 BAUD_RATE = 115200
@@ -171,27 +172,26 @@ while True:
     cv2.imshow('my WEBcam',frame)
     cv2.moveWindow('my WEBcam',0,0)
     if(y>0 and y1>0):
+        if(flag == 1):
+            send_byte(i,x,y)
+            if(abs(x-x1)<=buffer):
+                send_byte(2,x,y)
+                i = -1
+                flag = 0
+
         if(flag == 0):
             if (y<y1):
                 print("red is on top")
                 print("blue cord",x, y)
                 print("red cord",x1,y1)
                 i = 1
-                flag == 1
-                send_byte(i,x,y)
+                flag = 1
             if (y1<y):
                 print("Blue is on top")
                 print("blue cord",x, y)
                 print("red cord",x1,y1)
                 i = 0
-                flag == 1
-                send_byte(i,x,y)
-        if(flag == 1):
-            send_byte(i,x,y)
-            if(x == x1):
-                send_byte(2,x,y)
-                i = -1
-                flag = 0
+                flag = 1
 
         y1 = -1
         y = -1
