@@ -93,6 +93,8 @@ x1 = -1
 flag = 0
 i = -1
 buffer = 10
+buffer_area = 500
+area2 = 0
 
 PORT_NAME = 'COM7'  
 BAUD_RATE = 115200
@@ -147,14 +149,15 @@ while True:
     # cv2.drawContours(frame,contours,-1,(255,0,0),3)
 
     for contour in contours:
-        area = cv2.contourArea(contour)
-        if area>=200:
+        area2 = cv2.contourArea(contour)
+        if area2>=200:
             # cv2.drawContours(frame,[contour],0,(255,0,0),3)
             x,y,w,h=cv2.boundingRect(contour)
             cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),3)
 
     for contour in contours1:
             area = cv2.contourArea(contour)
+            # if(abs(area2-area) == buffer_area):
             if area>=200:
                 # cv2.drawContours(frame,[contour],0,(255,0,0),3)
                 x1,y1,w1,h1=cv2.boundingRect(contour)
